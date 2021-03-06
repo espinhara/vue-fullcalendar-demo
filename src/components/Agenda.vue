@@ -61,6 +61,9 @@
               <v-btn color="grey" class="white--text" @click="close">
                 Voltar
               </v-btn>
+              <v-btn v-if="model.id" @click="deleteNote(model)">
+                Deletar
+              </v-btn>
               <v-btn v-if="model.id" @click="updateModal({...model})">
                 Atualizar
               </v-btn>
@@ -191,6 +194,12 @@ export default {
         this.model.end = arg.end
         this.scheduleModal = true
       }
+    },
+    deleteNote(event){
+      console.log(event)
+      this.$store.commit('DELETE_EVENT', event)
+      this.close()
+      this.load()
     },
     handleDateClick(arg) {
       console.log(arg)
