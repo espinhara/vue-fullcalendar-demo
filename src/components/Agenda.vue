@@ -133,19 +133,10 @@ export default {
     load() {
       var pathTest = path.resolve(__dirname, 'docs')
       console.log(pathTest)
-
-      // console.log(this.$store.state.events);
-      // fileServer.serveDirectory( '../docs')
-      // fs.writeFile(`../docs/data_${(new Date()).getTime()}.json`, JSON.stringify( this.EVENTS), (err)=>{
-      //   if(err) return console.log(err)
-
-      // })
-      // var blob = new Blob([JSON.stringify( this.EVENTS)], {type: 'application/json'})
-      // console.log(blob)
-      // fileServer.saveAs( blob, `data_${(new Date()).getTime()}.json`)
     },
     close() {
       this.scheduleModal = false;
+      this.model = {}
     },
     save() {
       this.$store.commit("ADD_EVENT",{
@@ -162,8 +153,16 @@ export default {
     update(arg){
       let args= arg
       console.log(args)
-      this.$store.commit('UPDATE_EVENT',this.model)
-      this.load()
+      if(arg.event){
+        this.model.title = args.event.title
+        this.model.id= args.event.id?args.event.id:null
+        this.model.allDay = args.event.allDay
+        this.model.description = args.event.extendedProps.description
+        this.model.start = args.event.startStr
+        this.model.end = args.event.endStr
+        this.$store.commit('UPDATE_EVENT',this.model)
+        this.load()
+      }
     },
     updateModal(model){
       console.log(model)
@@ -173,25 +172,47 @@ export default {
       this.load()
     },
     handleDateSelect(arg) {
-      this.model.title = "Something"
-      this.model.allDay = arg.allDay
-      this.model.description = "Something"
-      this.model.start = arg.start
-      this.model.end = arg.end
-      this.scheduleModal = true;
-       
+      console.log(arg)
+      if(arg.event){
+        let args = arg
+        console.log(args)
+        this.model.title = args.event.title
+        this.model.id= args.event.id?args.event.id:null
+        this.model.allDay = args.event.allDay
+        this.model.description = args.event.extendedProps.description
+        this.model.start = args.event.startStr
+        this.model.end = args.event.endStr
+        this.scheduleModal = true;
+      }else{
+        this.model.title = "Something"
+        this.model.allDay = arg.allDay
+        this.model.description = "Something"
+        this.model.start = arg.start
+        this.model.end = arg.end
+        this.scheduleModal = true
+      }
     },
     handleDateClick(arg) {
-      let args = arg
-      console.log(args)
-      this.model.title = args.event.title
-      this.model.id= args.event.id?args.event.id:null
-      this.model.allDay = args.event.allDay
-      this.model.description = args.event.extendedProps.description
-      this.model.start = args.event.startStr
-      this.model.end = args.event.endStr
-      this.scheduleModal = true;
-    },
+      console.log(arg)
+      if(arg.event){
+        let args = arg
+        console.log(args)
+        this.model.title = args.event.title
+        this.model.id= args.event.id?args.event.id:null
+        this.model.allDay = args.event.allDay
+        this.model.description = args.event.extendedProps.description
+        this.model.start = args.event.startStr
+        this.model.end = args.event.endStr
+        this.scheduleModal = true;
+      }else{
+        this.model.title = "Something"
+        this.model.allDay = arg.allDay
+        this.model.description = "Something"
+        this.model.start = arg.start
+        this.model.end = arg.end
+        this.scheduleModal = true
+      }
+    }
   },
   mounted() {
     this.load();
