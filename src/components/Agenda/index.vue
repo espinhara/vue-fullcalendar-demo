@@ -74,6 +74,26 @@
           </v-card>
         </v-dialog>
       </div>
+      <v-snackbar
+      v-model="snackbar"
+      absolute
+      right
+      shaped
+      top
+    >
+      {{ text }}
+
+      <template v-slot:action="{ attrs }">
+        <v-btn
+          color="success"
+          text
+          v-bind="attrs"
+          @click="snackbar = false"
+        >
+          Close
+        </v-btn>
+      </template>
+    </v-snackbar>
     </template>
   </v-container>
 </template>
@@ -93,6 +113,8 @@ import { mapGetters } from "vuex";
 export default {
   data() {
     return {
+      text: 'sample sanack',
+      snackbar:false,
       scheduleModal: false,
       model: {
         title: "",
@@ -124,7 +146,8 @@ export default {
         select: this.handleDateSelect,
         eventClick: this.handleDateClick,
         eventResize: this.update,
-        eventDrop: this.update
+        eventDrop: this.update,
+        eventRender: this.render
       },
     };
   },
@@ -135,11 +158,13 @@ export default {
   methods: {
     load() {
       var pathTest = path.resolve(__dirname, 'docs')
-      console.log(pathTest)
     },
     close() {
       this.scheduleModal = false;
       this.model = {}
+    },
+    render(arg){
+      console.log(arg)
     },
     save() {
       this.$store.commit("ADD_EVENT",{
@@ -152,10 +177,11 @@ export default {
       })
       this.scheduleModal = false;
       this.load()
+      this.snackbar = true
+      this.text =  'Anotação finalizada com sucesso.'
     },
     update(arg){
       let args= arg
-      console.log(args)
       if(arg.event){
         this.model.title = args.event.title
         this.model.id= args.event.id?args.event.id:null
@@ -165,20 +191,21 @@ export default {
         this.model.end = args.event.endStr
         this.$store.commit('UPDATE_EVENT',this.model)
         this.load()
+        this.snackbar = true
+        this.text =  'Anotação atualizada com sucesso.'
       }
     },
     updateModal(model){
-      console.log(model)
       this.$store.commit('UPDATE_EVENT',model)
       this.scheduleModal = false;
       this.model ={}
       this.load()
+      this.snackbar = true
+      this.text =  'Anotação atualizada com sucesso.'
     },
     handleDateSelect(arg) {
-      console.log(arg)
       if(arg.event){
         let args = arg
-        console.log(args)
         this.model.title = args.event.title
         this.model.id= args.event.id?args.event.id:null
         this.model.allDay = args.event.allDay
@@ -196,16 +223,13 @@ export default {
       }
     },
     deleteNote(event){
-      console.log(event)
       this.$store.commit('DELETE_EVENT', event)
       this.close()
       this.load()
     },
     handleDateClick(arg) {
-      console.log(arg)
       if(arg.event){
         let args = arg
-        console.log(args)
         this.model.title = args.event.title
         this.model.id= args.event.id?args.event.id:null
         this.model.allDay = args.event.allDay
