@@ -7,7 +7,7 @@
 </template>
 
 <script>
-import Agenda from  './components/Agenda'
+import Agenda from  '@/components/Agenda'
   export default {
     name: 'app',
     components: { Agenda },
